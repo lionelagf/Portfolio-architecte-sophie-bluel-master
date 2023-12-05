@@ -15,31 +15,35 @@ function modalElement() {
   const modalWrapper = document.querySelector('.modal_wrapper')
   //* Création du titre du modale 1 *//
   const modalTitle = document.createElement('p')
-  modalTitle.setAttribute('class', 'modal_title')
+  modalTitle.classList.add('modal_title')
   modalTitle.innerText = 'Galerie photo'
-  //* Création du bouton de fermeture du modale *//
-  const modalCloseButton = document.createElement('button')
-  modalCloseButton.classList.add('js_modal', 'close_button')
-  const modalCloseButtonFa = document.createElement('i')
-  modalCloseButtonFa.classList.add('fa-solid', 'fa-xmark', 'fa-xl')
   //* Création de la partie qui reçois les travaux *//
   const sectionGallery = document.createElement('div')
-  sectionGallery.setAttribute('class', 'modal_gallery')
+  sectionGallery.classList.add('modal_gallery')
   //* Création de la ligne qui sépare les travaux du bouton d'ajout *//
   const modalDash = document.createElement('div')
   modalDash.setAttribute('class', 'modal_dash')
   //* Création du bouton d'ajout de photo *//
   const modalAddButton = document.createElement('input')
-  modalAddButton.setAttribute('id', 'modal_add_button')
-  modalAddButton.setAttribute('type', 'submit')
-  modalAddButton.setAttribute('value', 'Ajouter une photo')
-
+  modalAddButton.id = 'modal_add_button'
+  modalAddButton.type = 'submit'
+  modalAddButton.value = 'Ajouter une photo'
   modalWrapper.appendChild(modalTitle)
-  modalWrapper.appendChild(modalCloseButton)
-  modalCloseButton.appendChild(modalCloseButtonFa)
   modalWrapper.appendChild(sectionGallery)
   modalWrapper.appendChild(modalDash)
   modalWrapper.appendChild(modalAddButton)
+  appendModalCloseButton(modalWrapper)
+}
+
+function appendModalCloseButton(modal) {
+  //* Création du bouton de fermeture du modale *//
+  const modalCloseButton = document.createElement('button')
+  modalCloseButton.classList.add('js_modal', 'close_button')
+  modalCloseButton.addEventListener('click', toggleModal)
+  const modalCloseButtonFa = document.createElement('i')
+  modalCloseButtonFa.classList.add('fa-solid', 'fa-xmark', 'fa-xl')
+  modalCloseButton.appendChild(modalCloseButtonFa)
+  modal.appendChild(modalCloseButton)
 }
 
 //* Ouverture et fermeture modale 1 *//
@@ -99,6 +103,7 @@ function deleteWork(e) {
       Authorization: `Bearer ${token}`,
     },
   }).then((res) => {
+    return
     if (res.status === 204) {
       alert('deleted')
     }
@@ -125,11 +130,8 @@ const modalTitle = document.createElement('p')
 modalTitle.setAttribute('class', 'modal_title')
 modalTitle.innerText = 'Ajout photo'
 
-//* Création du bouton de fermeture du modale *//
-const modalCloseButton = document.createElement('button')
-modalCloseButton.setAttribute('class', 'close_button')
-const modalCloseButtonFa = document.createElement('i')
-modalCloseButtonFa.classList.add('fa-solid', 'fa-xmark', 'fa-xl')
+appendModalCloseButton(modalWrapper)
+
 //* Création de la flèche retour *//
 const modalBackButton = document.createElement('button')
 modalBackButton.setAttribute('class', 'back_button')
@@ -162,8 +164,8 @@ modalFormInput.style.display = 'none'
 modalImageContainer.appendChild(modalFormInput)
 
 const modalFormBtn = document.createElement('button')
-modalFormBtn.setAttribute('id', 'modal_form_btn')
-modalFormBtn.setAttribute('type', 'button')
+modalFormBtn.id = 'modal_form_btn'
+modalFormBtn.type = 'button'
 modalFormBtn.innerText = '+ Ajouter photo'
 
 modalFormBtn.addEventListener('click', function () {
@@ -179,16 +181,16 @@ const modalFormLabelTitle = document.createElement('label')
 modalFormLabelTitle.setAttribute('for', 'titre')
 modalFormLabelTitle.innerText = 'Titre'
 const modalFormTitle = document.createElement('input')
-modalFormTitle.setAttribute('type', 'text')
-modalFormTitle.setAttribute('name', 'titre')
-modalFormTitle.setAttribute('id', 'titre')
+modalFormTitle.type = 'text'
+modalFormTitle.name = 'titre'
+modalFormTitle.id = 'titre'
 
 const modalFormLabelCategory = document.createElement('label')
 modalFormLabelCategory.setAttribute('for', 'categoryList')
 modalFormLabelCategory.innerText = 'Catégorie'
 const modalFormCategory = document.createElement('select')
-modalFormCategory.setAttribute('name', 'category')
-modalFormCategory.setAttribute('id', 'categoryList')
+modalFormCategory.name = 'category'
+modalFormCategory.id = 'categoryList'
 
 //* Création de la ligne qui sépare les travaux du bouton d'ajout *//
 const modalDash = document.createElement('div')
@@ -196,19 +198,17 @@ modalDash.setAttribute('class', 'modal_dash')
 //* Création du bouton d'ajout de photo *//
 
 const modalValidateButton = document.createElement('input')
-modalValidateButton.setAttribute('id', 'modal_add_button')
-modalValidateButton.setAttribute('type', 'submit')
-modalValidateButton.setAttribute('value', 'Valider')
-modalValidateButton.setAttribute('disable', 'true')
+modalValidateButton.id = 'modal_add_button'
+modalValidateButton.type = 'submit'
+modalValidateButton.value = 'Valider'
+modalValidateButton.setAttribute('disabled', 'true')
 
 modalWrapper.appendChild(modalTitle)
-modalWrapper.appendChild(modalCloseButton)
 modalWrapper.appendChild(modalBackButton)
 modalWrapper.appendChild(modalFormProject)
 modalImageContainer.appendChild(modalFormFa)
 modalImageContainer.appendChild(modalFormBtn)
 modalImageContainer.appendChild(modalFormTxt)
-modalCloseButton.appendChild(modalCloseButtonFa)
 modalBackButton.appendChild(modalBackButtonFa)
 modalFormProject.appendChild(modalFormLabelTitle)
 modalFormProject.appendChild(modalFormTitle)
