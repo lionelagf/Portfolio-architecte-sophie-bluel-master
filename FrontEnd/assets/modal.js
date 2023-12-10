@@ -4,7 +4,7 @@ const works = await resworks.json()
 const rescategories = await fetch('http://localhost:5678/api/categories')
 const categories = await rescategories.json()
 
-const token = localStorage.getItem('token')
+const token = sessionStorage.getItem('token')
 
 ///////////////////////////////////////////
 ////////////////* Modal 1 *////////////////
@@ -76,14 +76,13 @@ async function generateWorks(works) {
     imageElement.src = project.imageUrl
 
     //* Création des icones trash *//
-    const trashContainer = document.createElement('div')
+    const trashContainer = document.createElement('button')
     trashContainer.setAttribute('class', 'trashContainer')
+    trashContainer.addEventListener('click', deleteWork)
     const trashElement = document.createElement('i')
     trashElement.classList.add('fa-solid', 'fa-trash-can')
-
     trashElement.setAttribute('data-id', project.id)
 
-    trashElement.addEventListener('click', deleteWork)
     sectionGallery.appendChild(worksElement)
     worksElement.appendChild(imageElement)
 
@@ -93,30 +92,31 @@ async function generateWorks(works) {
 }
 
 //* Supression travaux *//
-function deleteWork(e) {
+async function deleteWork(e) {
+  e.preventDefault()
   const idWork = e.target.dataset.id
 
-  fetch('http://localhost:5678/api/works/' + idWork, {
+  if (confirm('Voulez-vous vraiment supprimer cette image ?'))
+
+  await fetch('http://localhost:5678/api/works/' + idWork, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
   }).then((res) => {
-    return
     if (res.status === 204) {
-      alert('deleted')
-    }
+      e.target.closest('figure').remove()
+          }
+     
   })
 }
-
-///////////////////////////////////////////
-////////////////* Modal 2 *////////////////
-///////////////////////////////////////////
-
 modalElement()
 
 generateWorks(works)
+///////////////////////////////////////////
+////////////////* Modal 2 *////////////////
+///////////////////////////////////////////
 
 const modalAddButton = document.getElementById('modal_add_button')
 modalAddButton.addEventListener('click', function () {
@@ -168,7 +168,12 @@ modalFormBtn.id = 'modal_form_btn'
 modalFormBtn.type = 'button'
 modalFormBtn.innerText = '+ Ajouter photo'
 
-modalFormBtn.addEventListener('click', function () {
+const imagePreview = document.createElement('img')
+imagePreview.classList.add('image_preview')
+modalImageContainer.appendChild(imagePreview)
+
+modalFormBtn.addEventListener('click', function (e) {
+   e.preventDefault()
   modalFormInput.click()
 })
 
@@ -177,6 +182,18 @@ const modalFormTxt = document.createElement('span')
 modalFormTxt.innerText = 'jpg, png : 4mo max'
 /////////
 
+modalFormInput.addEventListener('change', function (e) {
+   e.preventDefault()
+  const selectedFile = modalFormInput.files[0]
+  if (selectedFile) {
+    imagePreview.src = URL.createObjectURL(selectedFile)
+    modalFormFa.style.display = 'none'
+    modalFormInput.style.display = 'none'
+    modalFormBtn.style.display = 'none'
+    modalFormTxt.style.display = 'none'
+  }
+})
+
 const modalFormLabelTitle = document.createElement('label')
 modalFormLabelTitle.setAttribute('for', 'titre')
 modalFormLabelTitle.innerText = 'Titre'
@@ -184,6 +201,7 @@ const modalFormTitle = document.createElement('input')
 modalFormTitle.type = 'text'
 modalFormTitle.name = 'titre'
 modalFormTitle.id = 'titre'
+modalFormTitle.addEventListener('input', checkFormCompletion)
 
 const modalFormLabelCategory = document.createElement('label')
 modalFormLabelCategory.setAttribute('for', 'categoryList')
@@ -191,6 +209,7 @@ modalFormLabelCategory.innerText = 'Catégorie'
 const modalFormCategory = document.createElement('select')
 modalFormCategory.name = 'category'
 modalFormCategory.id = 'categoryList'
+modalFormCategory.addEventListener('change', checkFormCompletion)
 
 //* Création de la ligne qui sépare les travaux du bouton d'ajout *//
 const modalDash = document.createElement('div')
@@ -202,6 +221,40 @@ modalValidateButton.id = 'modal_add_button'
 modalValidateButton.type = 'submit'
 modalValidateButton.value = 'Valider'
 modalValidateButton.setAttribute('disabled', 'true')
+modalValidateButton.addEventListener('click', modalFormPost)
+
+// Ajout d'un écouteur d'événements sur le formulaire pour vérifier son état
+function checkFormCompletion(e) {
+   e.preventDefault()
+  //* On vérifie si le formulaire est complètement rempli *//
+  const isImageSelected = modalFormInput.files.length > 0
+  const isTitleFilled = modalFormTitle.value.trim() !== ''
+  const isCategorySelected = modalFormCategory.value !== ''
+
+  if (isImageSelected && isTitleFilled && isCategorySelected) {
+    modalValidateButton.disabled = false
+  } else {
+    modalValidateButton.disabled = true
+  }
+}
+
+async function modalFormPost(e) {
+  e.preventDefault()
+const modalFormData = new FormData()
+modalFormData.append('image', modalFormInput.files[0])
+modalFormData.append('title', modalFormTitle.value)
+modalFormData.append('category', modalFormCategory.value)
+console.log(modalFormData)
+
+ await fetch('http://localhost:5678/api/works/', {
+   method: 'POST',
+   headers: {
+     Authorization: `Bearer ${token}`,
+   },
+   body: modalFormData,
+ }).then((response) => response.json())
+
+}
 
 modalWrapper.appendChild(modalTitle)
 modalWrapper.appendChild(modalBackButton)

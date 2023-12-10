@@ -1,8 +1,8 @@
 const loginForm = document.querySelector('.login')
-const token = localStorage.getItem('token')
+const token = sessionStorage.getItem('token')
 
-loginForm.addEventListener('submit', async function (event) {
-  event.preventDefault()
+loginForm.addEventListener('submit', async function (e) {
+  e.preventDefault()
 
   const email = document.getElementById('email')
   const password = document.getElementById('password')
@@ -10,7 +10,7 @@ loginForm.addEventListener('submit', async function (event) {
     email: email.value,
     password: password.value,
   }
-  fetch('http://localhost:5678/api/users/login', {
+   fetch('http://localhost:5678/api/users/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user),
@@ -21,14 +21,15 @@ loginForm.addEventListener('submit', async function (event) {
       }
     })
     .then((data) => {
-      window.localStorage.setItem('token', data.token)
+      window.sessionStorage.setItem('token', data.token)
       redirectIndex()
     })
     .catch((error) => {
-      console.log(error)
-      alert('Identifiant ou mot de passe incorrect.')
+      const errorInfos = document.querySelector('.wrong_informations')
+      errorInfos.classList.remove('.none')
     })
 })
+
 
 //* Redirection vers la page d'accueil *//
 function redirectIndex() {
@@ -36,7 +37,7 @@ function redirectIndex() {
 }
 
 function userConnected() {
-  const token = window.localStorage.getItem('token')
+  const token = window.sessionStorage.getItem('token')
   if (token) {
     return true
   } else {

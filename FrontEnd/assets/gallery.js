@@ -4,7 +4,7 @@ const works = await resworks.json()
 const rescategories = await fetch('http://localhost:5678/api/categories')
 const categories = await rescategories.json()
 
-const token = localStorage.getItem('token')
+const token = sessionStorage.getItem('token')
 
 //*Importation des projets depuis l'API*//
 async function generateWorks(works) {
@@ -80,7 +80,7 @@ buttonFilterHotelRestaurant.addEventListener('click', function () {
 
 let loginLink = document.querySelector('.login_link')
 function userConnected() {
-  const token = window.localStorage.getItem('token')
+  const token = window.sessionStorage.getItem('token')
   if (token) {
     return true
   } else {
@@ -90,8 +90,7 @@ function userConnected() {
 
 loginLink.addEventListener('click', (event) => {
   if (userConnected()) {
-    window.localStorage.removeItem('token')
-    window.location.href = window.location.href
+    window.sessionStorage.removeItem('token')
   } else {
     window.location.href = 'login.html'
   }
