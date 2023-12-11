@@ -97,19 +97,17 @@ async function deleteWork(e) {
   const idWork = e.target.dataset.id
 
   if (confirm('Voulez-vous vraiment supprimer cette image ?'))
-
-  await fetch('http://localhost:5678/api/works/' + idWork, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  }).then((res) => {
-    if (res.status === 204) {
-      e.target.closest('figure').remove()
-          }
-     
-  })
+    await fetch('http://localhost:5678/api/works/' + idWork, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => {
+      if (res.status === 204) {
+        e.target.closest('figure').remove()
+      }
+    })
 }
 modalElement()
 
@@ -173,7 +171,7 @@ imagePreview.classList.add('image_preview')
 modalImageContainer.appendChild(imagePreview)
 
 modalFormBtn.addEventListener('click', function (e) {
-   e.preventDefault()
+  e.preventDefault()
   modalFormInput.click()
 })
 
@@ -183,7 +181,7 @@ modalFormTxt.innerText = 'jpg, png : 4mo max'
 /////////
 
 modalFormInput.addEventListener('change', function (e) {
-   e.preventDefault()
+  e.preventDefault()
   const selectedFile = modalFormInput.files[0]
   if (selectedFile) {
     imagePreview.src = URL.createObjectURL(selectedFile)
@@ -225,7 +223,7 @@ modalValidateButton.addEventListener('click', modalFormPost)
 
 // Ajout d'un écouteur d'événements sur le formulaire pour vérifier son état
 function checkFormCompletion(e) {
-   e.preventDefault()
+  e.preventDefault()
   //* On vérifie si le formulaire est complètement rempli *//
   const isImageSelected = modalFormInput.files.length > 0
   const isTitleFilled = modalFormTitle.value.trim() !== ''
@@ -240,20 +238,19 @@ function checkFormCompletion(e) {
 
 async function modalFormPost(e) {
   e.preventDefault()
-const modalFormData = new FormData()
-modalFormData.append('image', modalFormInput.files[0])
-modalFormData.append('title', modalFormTitle.value)
-modalFormData.append('category', modalFormCategory.value)
-console.log(modalFormData)
+  const modalFormData = new FormData()
+  modalFormData.append('image', modalFormInput.files[0])
+  modalFormData.append('title', modalFormTitle.value)
+  modalFormData.append('category', modalFormCategory.value)
+  console.log(modalFormData)
 
- await fetch('http://localhost:5678/api/works/', {
-   method: 'POST',
-   headers: {
-     Authorization: `Bearer ${token}`,
-   },
-   body: modalFormData,
- }).then((response) => response.json())
-
+  await fetch('http://localhost:5678/api/works/', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: modalFormData,
+  }).then((response) => response.json())
 }
 
 modalWrapper.appendChild(modalTitle)
@@ -276,6 +273,9 @@ async function fetchCategory() {
   const data = await response.json()
 
   const categorySelect = document.getElementById('categoryList')
+  const nullOption = document.createElement('option')
+  nullOption.value = ''
+  categorySelect.appendChild(nullOption)
   data.forEach((category) => {
     const option = document.createElement('option')
     option.value = category.id
