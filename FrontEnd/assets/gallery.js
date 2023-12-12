@@ -12,13 +12,12 @@ async function generateWorks(works) {
     const project = works[i]
     const sectionGallery = document.querySelector('.gallery')
     const worksElement = document.createElement('figure')
+    sectionGallery.appendChild(worksElement)
     const imageElement = document.createElement('img')
     imageElement.src = project.imageUrl
+    worksElement.appendChild(imageElement)
     const descriptionElement = document.createElement('figcaption')
     descriptionElement.innerText = project.title
-
-    sectionGallery.appendChild(worksElement)
-    worksElement.appendChild(imageElement)
     worksElement.appendChild(descriptionElement)
   }
 }
@@ -34,15 +33,14 @@ for (let i = 0; i < btns.length; i++) {
   })
 }
 
+generateWorks(works)
 ////////////////////////////////
 //////*Filtre des projets*//////
 ////////////////////////////////
 
-generateWorks(works)
 //*Filtre All*//
 const buttonFilterAll = document.querySelector('.btn_all')
 buttonFilterAll.addEventListener('click', function () {
-  const worksFiltrees = works.filter(function (works) {})
   document.querySelector('.gallery').innerHTML = ''
   generateWorks(works)
 })
@@ -76,8 +74,7 @@ buttonFilterHotelRestaurant.addEventListener('click', function () {
   generateWorks(worksFiltrees)
 })
 
-
-
+//* Récupération du token après login *//
 let loginLink = document.querySelector('.login_link')
 function userConnected() {
   const token = window.sessionStorage.getItem('token')
@@ -88,6 +85,7 @@ function userConnected() {
   }
 }
 
+//* Listener sur le bouton "Logout" *//
 loginLink.addEventListener('click', (event) => {
   if (userConnected()) {
     window.sessionStorage.removeItem('token')
@@ -96,9 +94,7 @@ loginLink.addEventListener('click', (event) => {
   }
 })
 
-
 //*changement du login en logout *//
-
 function updateLoginLink() {
   if (userConnected()) {
     loginLink.innerText = 'logout'
@@ -106,27 +102,21 @@ function updateLoginLink() {
     loginLink.innerText = 'login'
   }
 }
-
 updateLoginLink()
 
 //* Bouton "mofifier"*//
-const editButton = document.querySelector('.btn_edit')
-const editBanner = document.querySelector('.banner_edition')
-const btnFilter = document.querySelector('.filter_btn')
-
 function showEditButton() {
+  const editButton = document.querySelector('.btn_edit')
+  const editBanner = document.querySelector('.banner_edition')
+  const btnFilter = document.querySelector('.filter_btn')
   if (userConnected()) {
-    editButton.style.display = 'flex'
-    editBanner.style.display = 'flex'
-    btnFilter.style.display = 'none'
-
+    editButton.classList.remove('none')
+    editBanner.classList.remove('none')
+    btnFilter.classList.add('none')
   } else {
-    editButton.style.display = 'none'
-    editBanner.style.display = 'none'
-    btnFilter.style.display = 'flex'
-
-
+    editButton.classList.add('none')
+    editBanner.classList.add('none')
+    btnFilter.classList.remove('none')
   }
 }
-
 showEditButton()

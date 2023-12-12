@@ -6,9 +6,9 @@ const categories = await rescategories.json()
 
 const token = sessionStorage.getItem('token')
 
-///////////////////////////////////////////
-////////////////* Modal 1 *////////////////
-///////////////////////////////////////////
+///////////////////////////////////////////////////
+////////////////////* Modale 1 *///////////////////
+///////////////////////////////////////////////////
 
 //* Création des éléments qui constitue le modale 1 *//
 function modalElement() {
@@ -51,6 +51,7 @@ const modal = document.querySelector('.modal')
 const triggers = document.querySelectorAll('.js_modal')
 
 function toggleModal() {
+  document.querySelector('.modal_wrapper').classList.toggle('none')
   modal.classList.toggle('show_modal')
   modal.removeAttribute('aria-hidden', 'false')
   modal.setAttribute('aria-modal', 'true')
@@ -58,8 +59,8 @@ function toggleModal() {
 function windowOnClick(event) {
   if (event.target === modal) {
     toggleModal()
-    document.querySelector('.modal_wrapper').style.display = 'flex'
-    document.querySelector('.modal_wrapper2').style.display = 'none'
+    document.querySelector('.modal_wrapper').classList.add('none')
+    document.querySelector('.modal_wrapper2').classList.add('none')
   }
 }
 triggers.forEach((trigger) => trigger.addEventListener('click', toggleModal))
@@ -72,21 +73,18 @@ async function generateWorks(works) {
     const sectionGallery = document.querySelector('.modal_gallery')
     const worksElement = document.createElement('figure')
     worksElement.setAttribute('class', 'figure')
+    sectionGallery.appendChild(worksElement)
     const imageElement = document.createElement('img')
     imageElement.src = project.imageUrl
-
+    worksElement.appendChild(imageElement)
     //* Création des icones trash *//
     const trashContainer = document.createElement('button')
     trashContainer.setAttribute('class', 'trashContainer')
     trashContainer.addEventListener('click', deleteWork)
+    worksElement.appendChild(trashContainer)
     const trashElement = document.createElement('i')
     trashElement.classList.add('fa-solid', 'fa-trash-can')
     trashElement.setAttribute('data-id', project.id)
-
-    sectionGallery.appendChild(worksElement)
-    worksElement.appendChild(imageElement)
-
-    worksElement.appendChild(trashContainer)
     trashContainer.appendChild(trashElement)
   }
 }
@@ -110,16 +108,17 @@ async function deleteWork(e) {
     })
 }
 modalElement()
-
 generateWorks(works)
-///////////////////////////////////////////
-////////////////* Modal 2 *////////////////
-///////////////////////////////////////////
 
+///////////////////////////////////////////////////
+////////////////////* Modale 2 *///////////////////
+///////////////////////////////////////////////////
+
+//* Bouton Ajout photo du modale 2 *//
 const modalAddButton = document.getElementById('modal_add_button')
 modalAddButton.addEventListener('click', function () {
-  document.querySelector('.modal_wrapper').style.display = 'none'
-  document.querySelector('.modal_wrapper2').style.display = 'flex'
+  document.querySelector('.modal_wrapper').classList.toggle('none')
+  document.querySelector('.modal_wrapper2').classList.toggle('none')
 })
 
 const modalWrapper = document.querySelector('.modal_wrapper2')
@@ -136,8 +135,8 @@ modalBackButton.setAttribute('class', 'back_button')
 const modalBackButtonFa = document.createElement('i')
 modalBackButtonFa.classList.add('fa-solid', 'fa-arrow-left', 'fa-xl')
 modalBackButton.addEventListener('click', function () {
-  document.querySelector('.modal_wrapper').style.display = 'flex'
-  document.querySelector('.modal_wrapper2').style.display = 'none'
+  document.querySelector('.modal_wrapper').classList.toggle('none')
+  document.querySelector('.modal_wrapper2').classList.toggle('none')
 })
 
 //* Création du form de téléchargement des projets *//
@@ -158,7 +157,7 @@ modalFormInput.id = 'image'
 modalFormInput.name = 'image'
 modalFormInput.accept = '.png, .jpg'
 modalFormInput.innerText = 'ajouter une photo'
-modalFormInput.style.display = 'none'
+modalFormInput.classList.add('none')
 modalImageContainer.appendChild(modalFormInput)
 
 const modalFormBtn = document.createElement('button')
@@ -185,10 +184,10 @@ modalFormInput.addEventListener('change', function (e) {
   const selectedFile = modalFormInput.files[0]
   if (selectedFile) {
     imagePreview.src = URL.createObjectURL(selectedFile)
-    modalFormFa.style.display = 'none'
-    modalFormInput.style.display = 'none'
-    modalFormBtn.style.display = 'none'
-    modalFormTxt.style.display = 'none'
+    modalFormFa.classList.add('none')
+    modalFormInput.classList.add('none')
+    modalFormBtn.classList.add('none')
+    modalFormTxt.classList.add('none')
   }
 })
 
