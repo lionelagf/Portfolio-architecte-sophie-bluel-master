@@ -10,7 +10,7 @@ loginForm.addEventListener('submit', async function (e) {
     email: email.value,
     password: password.value,
   }
-   fetch('http://localhost:5678/api/users/login', {
+  fetch('http://localhost:5678/api/users/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user),
@@ -26,10 +26,9 @@ loginForm.addEventListener('submit', async function (e) {
     })
     .catch((error) => {
       const errorInfos = document.querySelector('.wrong_informations')
-      errorInfos.classList.remove('.none')
+      errorInfos.classList.remove('none')
     })
 })
-
 
 //* Redirection vers la page d'accueil *//
 function redirectIndex() {

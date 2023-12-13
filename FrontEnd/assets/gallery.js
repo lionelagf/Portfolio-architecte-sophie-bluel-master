@@ -1,13 +1,17 @@
-const resworks = await fetch('http://localhost:5678/api/works')
-const works = await resworks.json()
-
-const rescategories = await fetch('http://localhost:5678/api/categories')
-const categories = await rescategories.json()
+// const rescategories = await fetch('http://localhost:5678/api/categories')
+// const categories = await rescategories.json()
 
 const token = sessionStorage.getItem('token')
 
+async function initGallery() {
+  const works = await fetchWorks()
+  generateGalleryWorks(works)
+}
+
+initGallery()
+
 //*Importation des projets depuis l'API*//
-async function generateWorks(works) {
+async function generateGalleryWorks(works) {
   for (let i = 0; i < works.length; i++) {
     const project = works[i]
     const sectionGallery = document.querySelector('.gallery')
@@ -33,7 +37,6 @@ for (let i = 0; i < btns.length; i++) {
   })
 }
 
-generateWorks(works)
 ////////////////////////////////
 //////*Filtre des projets*//////
 ////////////////////////////////
@@ -42,7 +45,7 @@ generateWorks(works)
 const buttonFilterAll = document.querySelector('.btn_all')
 buttonFilterAll.addEventListener('click', function () {
   document.querySelector('.gallery').innerHTML = ''
-  generateWorks(works)
+  generateGalleryWorks(works)
 })
 //*Filtre Objets*//
 const buttonFilterObject = document.querySelector('.btn_object')
@@ -51,7 +54,7 @@ buttonFilterObject.addEventListener('click', function () {
     return works.categoryId === 1
   })
   document.querySelector('.gallery').innerHTML = ''
-  generateWorks(worksFiltrees)
+  generateGalleryWorks(worksFiltrees)
 })
 //*Filtre Appartements*//
 const buttonFilterApartment = document.querySelector('.btn_apartment')
@@ -60,7 +63,7 @@ buttonFilterApartment.addEventListener('click', function () {
     return works.categoryId === 2
   })
   document.querySelector('.gallery').innerHTML = ''
-  generateWorks(worksFiltrees)
+  generateGalleryWorks(worksFiltrees)
 })
 //*Filtre Hôtels et Restaurants*//
 const buttonFilterHotelRestaurant = document.querySelector(
@@ -71,11 +74,11 @@ buttonFilterHotelRestaurant.addEventListener('click', function () {
     return works.categoryId === 3
   })
   document.querySelector('.gallery').innerHTML = ''
-  generateWorks(worksFiltrees)
+  generateGalleryWorks(worksFiltrees)
 })
 
 //* Récupération du token après login *//
-let loginLink = document.querySelector('.login_link')
+
 function userConnected() {
   const token = window.sessionStorage.getItem('token')
   if (token) {
@@ -86,6 +89,7 @@ function userConnected() {
 }
 
 //* Listener sur le bouton "Logout" *//
+let loginLink = document.querySelector('.login_link')
 loginLink.addEventListener('click', (event) => {
   if (userConnected()) {
     window.sessionStorage.removeItem('token')

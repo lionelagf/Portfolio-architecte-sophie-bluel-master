@@ -1,11 +1,13 @@
-const resworks = await fetch('http://localhost:5678/api/works')
-const works = await resworks.json()
+// const rescategories = await fetch('http://localhost:5678/api/categories')
+// const categories = await rescategories.json()
 
-const rescategories = await fetch('http://localhost:5678/api/categories')
-const categories = await rescategories.json()
+async function initModal() {
+  const resworks = await fetch('http://localhost:5678/api/works')
+  works = await resworks.json()
+  generateWorks(works)
+}
 
-const token = sessionStorage.getItem('token')
-
+initModal()
 ///////////////////////////////////////////////////
 ////////////////////* Modale 1 *///////////////////
 ///////////////////////////////////////////////////
@@ -108,7 +110,6 @@ async function deleteWork(e) {
     })
 }
 modalElement()
-generateWorks(works)
 
 ///////////////////////////////////////////////////
 ////////////////////* Modale 2 *///////////////////
