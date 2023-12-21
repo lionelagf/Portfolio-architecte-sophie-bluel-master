@@ -25,7 +25,7 @@ async function deleteWork(e) {
       if (res.ok) {
         e.target.closest('figure').remove()
         updateGallery(works)
-        alert('Projet supprimer avec succés')
+        alert('Projet supprimé avec succès')
       } else {
         alert('Un problème est survenu')
       }
