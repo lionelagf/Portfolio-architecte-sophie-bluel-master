@@ -1,6 +1,3 @@
-// const rescategories = await fetch('http://localhost:5678/api/categories')
-// const categories = await rescategories.json()
-
 const token = sessionStorage.getItem('token')
 
 async function initGallery() {
@@ -21,61 +18,46 @@ async function generateGalleryWorks(works) {
     imageElement.src = project.imageUrl
     worksElement.appendChild(imageElement)
     const descriptionElement = document.createElement('figcaption')
-    descriptionElement.innerText = project.title
+    descriptionElement.textContent = project.title
     worksElement.appendChild(descriptionElement)
   }
-}
-
-//*Changement de couleur des boutons au click*//
-const filterButtons = document.querySelector('.filter_btn')
-const btns = filterButtons.getElementsByClassName('btn')
-for (let i = 0; i < btns.length; i++) {
-  btns[i].addEventListener('click', function () {
-    const current = document.getElementsByClassName('active')
-    current[0].className = current[0].className.replace(' active', '')
-    this.className += ' active'
-  })
 }
 
 ////////////////////////////////
 //////*Filtre des projets*//////
 ////////////////////////////////
 
-//*Filtre All*//
-const buttonFilterAll = document.querySelector('.btn_all')
-buttonFilterAll.addEventListener('click', function () {
-  document.querySelector('.gallery').innerHTML = ''
-  generateGalleryWorks(works)
-})
-//*Filtre Objets*//
-const buttonFilterObject = document.querySelector('.btn_object')
-buttonFilterObject.addEventListener('click', function () {
-  const worksFiltrees = works.filter(function (works) {
-    return works.categoryId === 1
+async function FiltersBtn(data) {
+  const filtersContainer = document.querySelector('.filters_container')
+  const filterAll = document.createElement('button')
+  filterAll.classList.add('btn_filter', 'active')
+  filterAll.dataset.filter = 'all'
+  filterAll.textContent = 'Tous'
+  filtersContainer.appendChild(filterAll)
+  filterAll.addEventListener('click', activeFilterBtn)
+
+  data.forEach((category) => {
+    const filtersBtn = document.createElement('button')
+    filtersBtn.classList.add('btn_filter')
+    filtersBtn.dataset.filter = category.id
+    filtersBtn.textContent = category.name
+    filtersBtn.addEventListener('click', activeFilterBtn)
+    filtersContainer.appendChild(filtersBtn)
   })
-  document.querySelector('.gallery').innerHTML = ''
-  generateGalleryWorks(worksFiltrees)
-})
-//*Filtre Appartements*//
-const buttonFilterApartment = document.querySelector('.btn_apartment')
-buttonFilterApartment.addEventListener('click', function () {
-  const worksFiltrees = works.filter(function (works) {
-    return works.categoryId === 2
+}
+
+//*Changement de couleur des boutons et tri*//
+function activeFilterBtn(event) {
+  const current = document.getElementsByClassName('active')
+  current[0].className = current[0].className.replace(' active', '')
+  this.className += ' active'
+  const categoryId = event.target.dataset.filter
+  const worksFiltrees = works.filter(function (work) {
+    return categoryId == 'all' || work.categoryId == categoryId
   })
-  document.querySelector('.gallery').innerHTML = ''
+  document.querySelector('.gallery').textContent = ''
   generateGalleryWorks(worksFiltrees)
-})
-//*Filtre Hôtels et Restaurants*//
-const buttonFilterHotelRestaurant = document.querySelector(
-  '.btn_hotel_restaurant'
-)
-buttonFilterHotelRestaurant.addEventListener('click', function () {
-  const worksFiltrees = works.filter(function (works) {
-    return works.categoryId === 3
-  })
-  document.querySelector('.gallery').innerHTML = ''
-  generateGalleryWorks(worksFiltrees)
-})
+}
 
 //* Récupération du token après login *//
 
@@ -101,9 +83,9 @@ loginLink.addEventListener('click', (event) => {
 //*changement du login en logout *//
 function updateLoginLink() {
   if (userConnected()) {
-    loginLink.innerText = 'logout'
+    loginLink.textContent = 'logout'
   } else {
-    loginLink.innerText = 'login'
+    loginLink.textContent = 'login'
   }
 }
 updateLoginLink()
@@ -112,7 +94,7 @@ updateLoginLink()
 function showEditButton() {
   const editButton = document.querySelector('.btn_edit')
   const editBanner = document.querySelector('.banner_edition')
-  const btnFilter = document.querySelector('.filter_btn')
+  const btnFilter = document.querySelector('.filters_container')
   if (userConnected()) {
     editButton.classList.remove('none')
     editBanner.classList.remove('none')
